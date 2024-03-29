@@ -3,5 +3,9 @@
 ## Start App
 
 ```
-docker-compose up --build
+docker build -t pyspark-app .
+```
+
+```
+docker run pyspark-app
 ```

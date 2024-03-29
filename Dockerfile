@@ -1,10 +1,15 @@
-FROM bitnami/spark:latest
+FROM python:3.12-slim
 
-COPY app.py /opt/bitnami/spark/app.py
-COPY requirements.txt /opt/bitnami/spark/requirements.txt
+WORKDIR /app
 
-RUN pip install -r /opt/bitnami/spark/requirements.txt
+RUN apt-get update && apt-get install -y openjdk-17-jre-headless procps
 
-ENV SPARK_MASTER_URL=spark://spark-master:7077
+ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-amd64
 
-CMD ["spark-submit", "--master", "spark://spark-master:7077", "/opt/bitnami/spark/app.py"]
+COPY requirements.txt /app/
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . /app
+
+CMD ["python", "./app.py"]

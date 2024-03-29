@@ -1,11 +1,21 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import *
+from pyspark.sql.functions import col, lower, regexp_replace, explode, split
 
-# Create a SparkSession
-spark = SparkSession.builder.appName("My App").getOrCreate()
+spark = SparkSession.builder.appName("ReadAndPrintTxt").getOrCreate()
 
-rdd = spark.sparkContext.parallelize(range(1, 100))
+def clean_text(c):
+    return lower(regexp_replace(c, '[^a-zA-Z\s]', '')).alias('cleaned')
 
-print("-----THE SUM IS HERE: ------", rdd.sum())
+df = spark.read.text("leipzig124MB.txt").select(clean_text(col("value")))
+
+df = df.filter(col("cleaned") != "")
+
+words = df.select(explode(split(col("cleaned"), "\s+")).alias("word"))
+
+wordCounts = words.groupBy("word").count()
+
+sortedWordCounts = wordCounts.orderBy(col("count").desc()).limit(10)
+
+sortedWordCounts.show()
 
 spark.stop()
