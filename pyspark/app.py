@@ -6,7 +6,7 @@ spark = SparkSession.builder.appName("ReadAndPrintTxt").getOrCreate()
 def clean_text(c):
     return lower(regexp_replace(c, '[^a-zA-Z\s]', '')).alias('cleaned')
 
-df = spark.read.text("leipzig124MB.txt").select(clean_text(col("value")))
+df = spark.read.text("./data/leipzig124MB.txt").select(clean_text(col("value")))
 
 df = df.filter(col("cleaned") != "")
 
