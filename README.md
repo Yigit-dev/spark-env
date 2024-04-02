@@ -1,5 +1,12 @@
 # Apache Spark Environment with Docker
 
+## Before you start using Pyspark and Web App:
+
+'''
+Create a data folder within the pyspark and web-app folders.
+Upload the txt you want to use into the pyspark and web-app folders.
+'''
+
 ## Pyspark
 
 ```
