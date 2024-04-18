@@ -52,17 +52,33 @@
         pre {
             white-space: pre-wrap;
         }
+        #progress {
+            width: 100%;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+        #bar {
+            width: 0%;
+            height: 30px;
+            background-color: #4caf50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Word Count</h1>
-        <form method="post" enctype="multipart/form-data">
+        <form id="upload-form" method="post" enctype="multipart/form-data" onsubmit="uploadFile()">
             {% csrf_token %}
-            <input type="file" name="uploaded_file">
+            <input type="file" name="uploaded_file" id="uploaded_file">
             <br>
             <button type="submit" name="action" value="upload">File Upload and View</button>
         </form>
+        <div id="progress">
+            <div id="bar">0%</div>
+        </div>
         {% if upload_message %}
             <p>{{ upload_message }}</p>
         {% endif %}
@@ -70,14 +86,51 @@
             <div class="result">
                 <h2 style="margin-bottom: 10px;">Name of Uploaded File</h2>
                 <p>{{ file_name }}</p>
-                {% if file_content %}
-                <h2 style="margin-bottom: 10px;">Content of the Uploaded File</h2>
-                <div style="background-color: #ffffff; border: 1px solid #ddd; border-radius: 8px; padding: 10px; overflow: auto;">
-                    <pre style="font-size: 14px; white-space: pre-wrap; margin: 0;">{{ file_content }}</pre>
-                </div>
+                {% if top_words %}
+                    <h2>Top 10 Most Common Words</h2>
+                    <ul>
+                        {% for word, count in top_words %}
+                            <li>{{ word }}: {{ count }}</li>
+                        {% endfor %}
+                    </ul>
+                    <script>
+                        // Set progress bar to 100% when file processing is done
+                        document.getElementById("bar").style.width = "100%";
+                        document.getElementById("bar").innerHTML = "100%";
+                    </script>
                 {% endif %}
             </div>
         {% endif %}
     </div>
+    <script>
+        function uploadFile() {
+            var fileInput = document.getElementById("uploaded_file");
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append("uploaded_file", file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener("progress", function(event) {
+                if (event.lengthComputable) {
+                    var percent = (event.loaded / event.total) * 100;
+                    var bar = document.getElementById("bar");
+                    bar.style.width = percent + "%";
+                    bar.innerHTML = Math.round(percent) + "%";
+                }
+            });
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Refresh page to show processed data
+                    location.reload();
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+
+            xhr.open("POST", "", true);
+            xhr.send(formData);
+        }
+    </script>
 </body>
 </html>
