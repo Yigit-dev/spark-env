@@ -24,6 +24,8 @@ or
 docker-compose up
 ```
 
+When the application runs, it will be here [http://127.0.0.1:8000/](http://127.0.0.1:8888/lab). You can start working in the /work folder
+
 ## WEB APP
 
 ```
