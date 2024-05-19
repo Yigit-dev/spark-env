@@ -1,5 +1,11 @@
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, lower, regexp_replace, explode, split
+
+print("--------------------------------------------------------------")
+print(f"PYTHON VERSION: {os.popen('python --version').read().strip()}")
+print(f"JDK VERSION: {os.popen('java -version 2>&1').read().strip()}")
+print("--------------------------------------------------------------")
 
 spark = SparkSession.builder.appName("ReadAndPrintTxt").getOrCreate()
 
