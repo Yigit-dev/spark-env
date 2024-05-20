@@ -15,6 +15,14 @@ docker build -t pyspark-app .
 docker run pyspark-app
 ```
 
+## Pyspark for Different Versions
+
+```
+cd pyspark-version
+docker build -t pyspark-version-app .
+docker run pyspark-version-app
+```
+
 ## Jupyter Notebook
 
 ```
